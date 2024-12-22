@@ -1,9 +1,9 @@
 REV := $(shell git rev-parse --short HEAD)
 SEC := $(shell date +%s)
 ifeq ($(shell uname), Darwin)
-	DATE := $(shell TZ=UTC date -j -f "%s" ${SEC} +"%Y-%m-%dT%H:%M:%SZ")
+  DATE := $(shell TZ=UTC date -j -f "%s" ${SEC} +"%Y-%m-%dT%H:%M:%SZ")
 else
-	DATE := $(shell date -u -d @${SEC} +"%Y-%m-%dT%H:%M:%SZ")
+  DATE := $(shell date -u -d @${SEC} +"%Y-%m-%dT%H:%M:%SZ")
 endif
 
 APP := c5o
