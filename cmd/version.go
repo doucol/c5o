@@ -9,7 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const Version = "v0.0.1"
+var (
+	Date     string
+	Revision string
+	Version  string
+)
 
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
@@ -18,6 +22,8 @@ var versionCmd = &cobra.Command{
 	Long:  `Print just the version and exit`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(Version)
+		fmt.Println(Revision)
+		fmt.Println(Date)
 	},
 }
 
