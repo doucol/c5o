@@ -1,6 +1,3 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -18,12 +15,10 @@ var (
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print version and exit",
-	Long:  `Print just the version and exit`,
+	Short: "Print version, revision, and date of build",
+	Long:  `Print version, revision, and date of build`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(Version)
-		fmt.Println(Revision)
-		fmt.Println(Date)
+		fmt.Printf("Version: %s\nRevision: %s\nDate: %s\n", Version, Revision, Date)
 	},
 }
 
