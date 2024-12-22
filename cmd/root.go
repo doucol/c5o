@@ -10,11 +10,10 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "c5o",
-	Short: "c5o is a collection of project calico utilities which may or may not be helpful",
-	Long:  `c5o longer descripton TBD`,
-	// Uncomment the following line if your bare application has an action associated with it:
+	Short: "Project Calico utilities",
+	Long:  fmt.Sprintf("c5o - %s\nA collection of Project Calico utilities which may or may not be helpful", Version),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("run this")
+		cmd.Help()
 	},
 }
 
@@ -36,5 +35,5 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
