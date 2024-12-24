@@ -28,14 +28,12 @@ func init() {
 	// var cfgFile string
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.c5o.yaml)")
 
+	var def string
 	if home := homedir.HomeDir(); home != "" {
-		def := filepath.Join(home, ".kube", "config")
-		usg := fmt.Sprintf("kubernetes config file (default is %s)", def)
-		rootCmd.PersistentFlags().StringVar(&KubeConfig, "kubeconfig", def, usg)
-	} else {
-		rootCmd.PersistentFlags().StringVar(&KubeConfig, "kubeconfig", "", "absolute path to the kubeconfig file")
+		def = filepath.Join(home, ".kube", "config")
 	}
-	rootCmd.PersistentFlags().StringVar(&KubeContext, "kubecontext", "", "(optional) the kubeconfig context to use")
+	rootCmd.PersistentFlags().StringVar(&KubeConfig, "kubeconfig", def, "absolute path to the kubeconfig file")
+	rootCmd.PersistentFlags().StringVar(&KubeContext, "kubecontext", "", "(optional) kubeconfig context to use")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
