@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/doucol/c5o/internal"
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/util/homedir"
 )
@@ -13,8 +14,11 @@ var rootCmd = &cobra.Command{
 	Use:   "c5o",
 	Short: "Project Calico utilities",
 	Long:  fmt.Sprintf("c5o - %s\nA collection of Project Calico utilities which may or may not be helpful", Version),
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if err := cmd.Help(); err != nil {
+			return err
+		}
+		return nil
 	},
 }
 
@@ -43,7 +47,13 @@ func init() {
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() int {
-	err := rootCmd.Execute()
+	fmt.Printf("config: %s, ctx: %s", KubeConfig, KubeContext)
+	cmdContext, err := internal.NewCmdContext(KubeConfig, KubeContext)
+	if err != nil {
+		fmt.Printf("Error: %s", err.Error())
+		return 1
+	}
+	err = rootCmd.ExecuteContext(cmdContext.ToContext())
 	if err != nil {
 		fmt.Printf("Error: %s", err.Error())
 		return 1
