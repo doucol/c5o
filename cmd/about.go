@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// aboutCmd represents the about command
 var aboutCmd = &cobra.Command{
 	Use:   "about",
 	Short: "Print version, revision, and date of build",
