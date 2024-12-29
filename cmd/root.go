@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/doucol/c5o/internal"
@@ -22,22 +23,23 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-var KubeConfig, KubeContext string
+var kubeConfig, kubeContext string
 
 func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	// var cfgFile string
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.c5o.yaml)")
-
-	var def string
+	var dflt string
 	if home := homedir.HomeDir(); home != "" {
-		def = filepath.Join(home, ".kube", "config")
+		dflt = filepath.Join(home, ".kube", "config")
 	}
-	rootCmd.PersistentFlags().StringVar(&KubeConfig, "kubeconfig", def, "absolute path to the kubeconfig file")
-	rootCmd.PersistentFlags().StringVar(&KubeContext, "kubecontext", "", "(optional) kubeconfig context to use")
+	kcev := os.Getenv("KUBECONFIG")
+	if kcev != "" {
+		dflt = kcev
+	}
+	rootCmd.PersistentFlags().StringVar(&kubeConfig, "kubeconfig", dflt, "absolute path to the kubeconfig file")
+	rootCmd.PersistentFlags().StringVar(&kubeContext, "kubecontext", "", "(optional) kubeconfig context to use")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -47,15 +49,17 @@ func init() {
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() int {
-	fmt.Printf("config: %s, ctx: %s", KubeConfig, KubeContext)
-	cmdContext, err := internal.NewCmdContext(KubeConfig, KubeContext)
-	if err != nil {
-		fmt.Printf("Error: %s", err.Error())
-		return 1
+	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+		cmdContext, err := internal.NewCmdContext(kubeConfig, kubeContext)
+		if err != nil {
+			return err
+		}
+		cmd.SetContext(cmdContext.ToContext())
+		return nil
 	}
-	err = rootCmd.ExecuteContext(cmdContext.ToContext())
+	err := rootCmd.Execute()
 	if err != nil {
-		fmt.Printf("Error: %s", err.Error())
+		fmt.Printf("Error: %s\n", err.Error())
 		return 1
 	}
 	return 0

@@ -8,9 +8,9 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-type CmdContextKeyType string
+type cmdContextKeyType string
 
-const CmdContextKey CmdContextKeyType = "CmdContextKey"
+const cmdContextKey cmdContextKeyType = "CmdContextKey"
 
 type CmdContext struct {
 	KubeConfig  string
@@ -19,16 +19,19 @@ type CmdContext struct {
 }
 
 func (c *CmdContext) ToContext() context.Context {
-	return context.WithValue(context.Background(), CmdContextKey, c)
+	return context.WithValue(context.Background(), cmdContextKey, c)
 }
 
 func CmdContextFromContext(ctx context.Context) *CmdContext {
-	return ctx.Value(CmdContextKey).(*CmdContext)
+	return ctx.Value(cmdContextKey).(*CmdContext)
 }
 
 func NewCmdContext(kubeConfig, kubeContext string) (*CmdContext, error) {
+	var configOverrides *clientcmd.ConfigOverrides
 	configLoadingRules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: kubeConfig}
-	configOverrides := &clientcmd.ConfigOverrides{CurrentContext: kubeContext}
+	if kubeContext != "" {
+		configOverrides = &clientcmd.ConfigOverrides{CurrentContext: kubeContext}
+	}
 	config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(configLoadingRules, configOverrides).ClientConfig()
 	if err != nil {
 		return nil, err
@@ -40,9 +43,5 @@ func NewCmdContext(kubeConfig, kubeContext string) (*CmdContext, error) {
 		return nil, err
 	}
 
-	return &CmdContext{
-		KubeConfig:  kubeConfig,
-		KubeContext: kubeContext,
-		Clientset:   clientset,
-	}, nil
+	return &CmdContext{KubeConfig: kubeConfig, KubeContext: kubeContext, Clientset: clientset}, nil
 }
