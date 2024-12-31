@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/doucol/c5o/cmd/monitor"
@@ -34,10 +35,10 @@ func init() {
 	if home := homedir.HomeDir(); home != "" {
 		dflt = filepath.Join(home, ".kube", "config")
 	}
-	// kcev := os.Getenv("KUBECONFIG")
-	// if kcev != "" {
-	//   dflt = kcev
-	// }
+	kcev := os.Getenv("KUBECONFIG")
+	if kcev != "" {
+		dflt = kcev
+	}
 	rootCmd.PersistentFlags().StringVar(&kubeConfig, "kubeconfig", dflt, "absolute path to the kubeconfig file")
 	rootCmd.PersistentFlags().StringVar(&kubeContext, "kubecontext", "", "(optional) kubeconfig context to use")
 	rootCmd.AddCommand(monitor.MonitorCmd, aboutCmd, versionCmd)
