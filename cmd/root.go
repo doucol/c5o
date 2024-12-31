@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
+	"github.com/doucol/c5o/cmd/monitor"
 	"github.com/doucol/c5o/internal"
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/util/homedir"
@@ -14,7 +14,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "c5o",
 	Short: "Project Calico utilities",
-	Long:  fmt.Sprintf("c5o - %s\nA collection of Project Calico utilities which may or may not be helpful", Version),
+	Long:  "c5o\nA collection of Project Calico utilities which may or may not be helpful",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := cmd.Help(); err != nil {
 			return err
@@ -34,13 +34,13 @@ func init() {
 	if home := homedir.HomeDir(); home != "" {
 		dflt = filepath.Join(home, ".kube", "config")
 	}
-	kcev := os.Getenv("KUBECONFIG")
-	if kcev != "" {
-		dflt = kcev
-	}
+	// kcev := os.Getenv("KUBECONFIG")
+	// if kcev != "" {
+	//   dflt = kcev
+	// }
 	rootCmd.PersistentFlags().StringVar(&kubeConfig, "kubeconfig", dflt, "absolute path to the kubeconfig file")
 	rootCmd.PersistentFlags().StringVar(&kubeContext, "kubecontext", "", "(optional) kubeconfig context to use")
-
+	rootCmd.AddCommand(monitor.MonitorCmd, aboutCmd, versionCmd)
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")

@@ -17,7 +17,7 @@ test: ## Run tests
 	@go clean --testcache && go test ./...
 
 build: ## Build
-	@CGO_ENABLED=0 go build -ldflags "-X ${SRC}/cmd.Date=${DATE} -X ${SRC}/cmd.Revision=${REV} -X ${SRC}/cmd.Version=${VER} -w -s" -a -o ${OUT} main.go
+	@CGO_ENABLED=0 go build -ldflags "-X ${SRC}/cmd.date=${DATE} -X ${SRC}/cmd.revision=${REV} -X ${SRC}/cmd.version=${VER} -w -s" -a -o ${OUT} main.go
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^:]*?## "}; {printf "\033[38;5;69m%-30s\033[38;5;38m %s\033[0m\n", $$1, $$2}'

@@ -26,8 +26,12 @@ func CmdContextFromContext(ctx context.Context) *CmdContext {
 	return ctx.Value(cmdContextKey).(*CmdContext)
 }
 
+func ClientsetFromContext(ctx context.Context) *kubernetes.Clientset {
+	return CmdContextFromContext(ctx).Clientset
+}
+
 func NewCmdContext(kubeConfig, kubeContext string) (*CmdContext, error) {
-	var configOverrides *clientcmd.ConfigOverrides
+	var configOverrides *clientcmd.ConfigOverrides = nil
 	configLoadingRules := &clientcmd.ClientConfigLoadingRules{ExplicitPath: kubeConfig}
 	if kubeContext != "" {
 		configOverrides = &clientcmd.ConfigOverrides{CurrentContext: kubeContext}
